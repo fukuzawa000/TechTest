@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.techtest.mapper.MoviesMapper">
+    <select id="getMovies" resultType="com.techtest.entiy.MovieInfo" parameterType="com.techtest.entiy.SearchKeyword">
+		SELECT
+			Id
+			,Name
+			,Overview
+			,ShowBeginDate
+			,ShowEndDate
+		FROM
+			Movies
+		WHERE
+			1 = 1
+			<choose>
+				<when test="id != null and id != ''">
+					AND Id = #{id,     jdbcType=VARCHAR}
+				</when>
+				<when test="name != null and name != ''">
+					<bind name = "nameSearchKeyword" value = "'%'+name+'%'"/>
+					AND Name Like #{nameSearchKeyword}
+				</when>
+			</choose>
+			ORDER BY ShowBeginDate DESC
+			LIMIT 1000;
+    </select>
+  
+</mapper>

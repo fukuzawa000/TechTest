@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.techtest.mapper.AuthMapper">
+    <select id="authByUser" resultType="com.techtest.entiy.UserInfo" parameterType="com.techtest.entiy.UserInfo">
+        SELECT
+           UserId
+           ,Name
+        FROM
+            UserInfo
+        WHERE
+            UserId=#{userid,jdbcType=VARCHAR}
+        AND password=#{password,jdbcType=VARCHAR}
+        AND DelFlag != '1'
+    </select>
+    
+    <insert id="insertToken" parameterType="com.techtest.entiy.LoginToken">
+	    INSERT INTO 
+	    	LoginToken(
+	    		UserId
+	    		, Token
+	    		, LoginTime
+	    		)
+			VALUES(
+				  #{userId,     jdbcType=VARCHAR}
+				, #{token,      jdbcType=VARCHAR}
+				, current_timestamp()
+				)
+    </insert>
+    
+    <update id="updateToken" parameterType="com.techtest.entiy.LoginToken">
+    	UPDATE LoginToken SET
+    		Token = 		#{token,      jdbcType=VARCHAR}
+    		,LoginTime = 	current_timestamp()
+	    WHERE
+          	UserId=#{userId,jdbcType=VARCHAR}
+    </update>
+    
+    <delete id="logout" parameterType="String">
+	    DELETE FROM
+	    	LoginToken
+	    WHERE
+          	UserId=#{userId,jdbcType=VARCHAR}
+	</delete>
+	
+	<select id="loginTokenCheck" resultType="com.techtest.entiy.LoginToken" parameterType="String">
+        SELECT
+        	UserId
+ 			,Token
+        FROM
+            LoginToken
+        WHERE
+            UserId=#{userId,jdbcType=VARCHAR}
+    </select>
+    
+    <delete id="deleteExpiredToken" parameterType="String">
+	    DELETE FROM
+	    	LoginToken
+	    WHERE
+          	<![CDATA[LoginTime < DATE_ADD(current_timestamp(),INTERVAL -1 HOUR)]]>
+	</delete>
+	
+</mapper>

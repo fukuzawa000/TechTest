@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.techtest.mapper.FavoritesMapper">
+    <select id="getFavoritesByUserid" resultType="com.techtest.entiy.MovieInfo" parameterType="String">
+		SELECT
+		    M.Id 
+		    ,M.Name 
+		    ,M.Overview 
+		    ,M.ShowBeginDate 
+		    ,M.ShowEndDate 
+		FROM
+		    Favorites F inner join Movies M
+		    on F.MovieId  = M.Id 
+		WHERE
+            USERID=#{userid,jdbcType=VARCHAR}
+    </select>
+ 
+    <select id="selectFavorites" resultType="Integer" parameterType="com.techtest.entiy.Favorites">
+   		SELECT
+    		COUNT(*)
+    	FROM
+    		Favorites
+ 		WHERE 
+ 			UserId = #{userid,     jdbcType=VARCHAR}
+ 		AND	MovieId = #{movieid,      jdbcType=VARCHAR}
+    </select>
+    
+    <insert id="insertFavorites" parameterType="com.techtest.entiy.Favorites">
+	    INSERT INTO 
+	    	Favorites(
+	    		UserId
+	    		, MovieId
+	    		)
+			VALUES(
+				  #{userid,     jdbcType=VARCHAR}
+				, #{movieid,      jdbcType=VARCHAR}
+				)
+    </insert>
+    
+    <delete id="deleteFavorites" parameterType="com.techtest.entiy.Favorites">
+ 		DELETE FROM 
+ 			Favorites
+ 		WHERE 
+ 			UserId = #{userid,     jdbcType=VARCHAR}
+ 		AND	MovieId = #{movieid,      jdbcType=VARCHAR}
+    </delete>
+</mapper>
